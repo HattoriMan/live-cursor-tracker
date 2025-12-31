@@ -5,6 +5,7 @@ const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
+const clientBuildPath = path.join(__dirname, "../client/build");
 
 const io = new Server(server, {
   cors: {
@@ -13,10 +14,10 @@ const io = new Server(server, {
   },
 });
 
-app.use(express.static(path.join(__dirname, "../client/build")));
+app.use(express.static(clientBuildPath));
 
-app.get("/.*/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+app.use((req, res) => {
+  res.sendFile(path.join(clientBuildPath, "index.html"));
 });
 
 io.on("connection", (socket) => {
