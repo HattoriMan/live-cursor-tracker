@@ -7,12 +7,24 @@ const app = express();
 const server = http.createServer(app);
 const clientBuildPath = path.join(__dirname, "../client/build");
 
+const allowedOrigins = [
+  "https://your-app.onrender.com",
+  "http://localhost:3000"
+];
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
   },
 });
+
 
 app.use(express.static(clientBuildPath));
 
